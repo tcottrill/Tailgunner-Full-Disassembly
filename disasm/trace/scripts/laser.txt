@@ -1,0 +1,21 @@
+# A game: one shot, frames of the two laser beams.
+frames 300
+coin
+frames 60
+start 10
+frames 120
+stick 0xB0 0x60
+frames 30
+fire on
+frames 1
+snap laser_1
+frames 1
+snap laser_2
+frames 1
+snap laser_3
+frames 1
+frames 2
+snap laser_6
+frames 1
+fire off
+frames 10

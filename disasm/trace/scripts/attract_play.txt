@@ -1,0 +1,32 @@
+# Power on, watch the attract mode, coin up, play a random game to the end.
+snap power_on
+frames 1
+frames 60
+snap attract_060
+frames 1
+frames 240
+snap attract_300
+frames 1
+frames 600
+snap attract_900
+frames 1
+coin
+frames 60
+snap credit
+frames 1
+start 4
+frames 30
+snap play_start
+frames 1
+random 3000 7
+snap play_3000
+frames 1
+random 6000 11
+snap play_9000
+frames 1
+fire off
+shield off
+stick 0x80 0x80
+frames 2000
+snap after_game
+frames 1

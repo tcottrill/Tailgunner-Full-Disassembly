@@ -1,0 +1,14 @@
+# A game with the shield held: frames of the shield and its points.
+frames 300
+coin
+frames 60
+start 10
+frames 120
+shield on
+frames 20
+snap shield_a
+frames 1
+snap shield_b
+frames 1
+shield off
+frames 10

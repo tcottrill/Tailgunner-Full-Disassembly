@@ -1,0 +1,23 @@
+Place your Tailgunner ROMs here. ROM images are not included in this repository.
+
+Either the MAME set as a zip:
+
+    roms\tailg.zip
+
+or the four chips loose in a folder:
+
+    roms\tailg\tgunner.t70
+    roms\tailg\tgunner.p70
+    roms\tailg\tgunner.t71
+    roms\tailg\tgunner.p71
+
+The emulator wants these file names. The disassembly tools find the chips
+by CRC32, so for them other names work too:
+
+    tgunner.t70  CRC32 21EC9A04
+    tgunner.p70  CRC32 8D7410B3
+    tgunner.t71  CRC32 2C954AB6
+    tgunner.p71  CRC32 8E2C8494
+
+The emulator (emu_src\tailgunner_emu.exe) and the disassembly tools
+(disasm\gen_from_roms.py) both look here.

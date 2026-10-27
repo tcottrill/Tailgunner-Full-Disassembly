@@ -1,0 +1,14 @@
+# Two credits, long random games with several seeds.
+frames 300
+coin
+coin
+coin
+start 4
+random 9000 101
+frames 600
+start 4
+random 9000 202
+frames 600
+start 4
+random 9000 303
+frames 2000

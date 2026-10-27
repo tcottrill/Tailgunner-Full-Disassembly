@@ -1,0 +1,14 @@
+# Power on with START held: the test mode at $1000.
+start 120
+snap testmode_a
+frames 1
+stick 0x30 0xD0
+fire on
+frames 60
+snap testmode_b
+frames 1
+fire off
+shield on
+frames 60
+snap testmode_c
+frames 1

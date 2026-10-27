@@ -1,0 +1,45 @@
+# A game with the autoaim cheat on, so shots hit: scoring, explosions and the
+# later waves. RAM snapshots every 300 frames for ramdiff.py.
+frames 300
+coin
+frames 60
+start 10
+autoaim 50
+ram s000
+random 300 21
+ram s300
+snap score_300
+frames 1
+random 300 22
+ram s600
+random 300 23
+ram s900
+snap score_900
+frames 1
+random 300 24
+ram s1200
+random 300 25
+ram s1500
+random 300 26
+ram s1800
+snap score_1800
+frames 1
+random 300 27
+ram s2100
+random 300 28
+ram s2400
+random 3000 29
+ram s5400
+snap score_5400
+frames 1
+random 6000 30
+ram s11400
+snap score_11400
+frames 1
+autoaim 0
+fire off
+shield off
+frames 6000
+ram s17400
+snap score_end
+frames 1

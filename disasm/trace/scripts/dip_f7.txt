@@ -1,0 +1,11 @@
+# DIP byte 0xF7 (driver SWITCHES port; bit 7 = coin)
+switches 0xF7
+frames 1200
+snap dip_f7
+frames 1
+coin
+coin
+frames 30
+start 4
+random 8000 247
+frames 1500

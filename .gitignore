@@ -1,0 +1,29 @@
+# ROM images are not distributed. Supply your own MAME tailg set and
+# regenerate everything with disasm/gen_from_roms.py (see disasm/README.md).
+roms/*
+!roms/Place ROMs Here.txt
+emu_src/roms/
+*.bin
+
+# Everything recorded from the running ROM - traces, frame captures, the
+# analysis - is build output: disasm/trace/run_traces.py records it again.
+disasm/build/
+
+# Python
+__pycache__/
+*.pyc
+
+# Build output (the emulator's exe is published; the tracing harness is
+# built by run_traces.py on first use)
+emu_src/obj/
+emu_src/shots/
+*.exe
+!emu_src/tailgunner_emu.exe
+*.obj
+*.pdb
+*.ilk
+*.log
+
+# Local working files, kept out of the published tree
+publish_tree.ps1
+.claude/

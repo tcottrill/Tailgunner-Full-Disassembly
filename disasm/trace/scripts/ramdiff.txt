@@ -1,0 +1,35 @@
+# RAM snapshots around the events of a game, for naming RAM words.
+frames 600
+ram attract
+coin
+ram coin1
+coin
+ram coin2
+frames 60
+start 10
+ram started
+frames 60
+ram play_60
+fire on
+frames 2
+ram fire_down
+frames 6
+ram fire_6
+fire off
+frames 60
+shield on
+frames 60
+ram shield_on
+shield off
+frames 60
+ram shield_off
+sweep 3000
+ram sweep_3000
+snap sweep_3000
+frames 1
+sweep 6000
+ram sweep_9000
+snap sweep_9000
+frames 1
+frames 3000
+ram end

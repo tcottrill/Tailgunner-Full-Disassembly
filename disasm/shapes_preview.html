@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tailgunner ROM Pictures</title>
+<style>
+:root{--bg:#0b0d10;--panel:#151a20;--ink:#d8dee6;--dim:#8a96a3;--beam:#e8f4ff;--accent:#6fd3ff;--line:#2a323c}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f4f6f8;--panel:#ffffff;--ink:#1d232a;--dim:#5b6673;--beam:#0d1a26;--accent:#0067a3;--line:#d5dbe1}}
+:root[data-theme="light"]{--bg:#f4f6f8;--panel:#ffffff;--ink:#1d232a;--dim:#5b6673;--beam:#0d1a26;--accent:#0067a3;--line:#d5dbe1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:32px 0 8px}
+p{color:var(--dim);margin:4px 0 12px;max-width:75ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px}
+.card canvas{width:100%;aspect-ratio:1/1;display:block;background:#000;border-radius:4px}
+.card .t{font-weight:600}.card .s{color:var(--dim);font-size:12px;font-family:ui-monospace,Consolas,monospace}
+.font{display:flex;flex-wrap:wrap;gap:6px}
+.font .card{padding:6px;width:72px}.font canvas{aspect-ratio:3/4}
+.strings canvas{width:100%;height:auto;aspect-ratio:auto}
+code{font-family:ui-monospace,Consolas,monospace}
+label{color:var(--dim)}
+</style></head><body><main>
+<h1>Tailgunner: every picture in the ROM</h1>
+<p>Decoded from the program ROM by <code>disasm/emit_shapes.py</code>; the names are the labels of
+<code>tailgunner_program_rom.asm</code>. The models turn here for viewing only; in the game the
+fighters bank by their velocity.</p>
+<label><input type="checkbox" id="spin" checked> turn the models</label>
+<h2>Fighter models (MODELS)</h2>
+<p>Vertex lists of x, y, z bytes ($80 = 0, $FF ends) and edge lists of two vertex numbers per byte.
+NEWWAVE puts one of the four in each fighter's FTRn_MODEL.</p>
+<div class="grid" id="fighters"></div>
+<h2>Title letters (LETTERS)</h2>
+<p>The 3D models TITLE3D flies in during attract mode, same format. The four are drawn together from
+one origin, and the strokes are not split by letter: the R of GUNNER takes its upright from Letters 2
+(vertices 14-15, $1A6A-$1A6D) and its bowl and leg from Letters 3. The single models below keep
+their place in that shared frame.</p>
+<div class="grid" id="title"></div>
+<div class="grid" id="letters" style="margin-top:12px"></div>
+<h2>Test pattern (TESTFIG)</h2>
+<p>Drawn by TESTMODE when the game is powered on with START held.</p>
+<div class="grid" id="test"></div>
+<h2>Crosshair (XHAIRSHP) and shield (SHIELDPTS)</h2>
+<p>The shield is one path from the screen centre through the 12 points (screen positions, byte x 4):
+a lattice of diamonds across the whole screen. In the game each segment's brightness changes from frame
+to frame.</p>
+<div class="grid" id="xhair"></div>
+<h2>Vector font (CHRGRID / CHRSTROKES / CHRINDEX)</h2>
+<p>Each stroke joins two of 15 grid points (5 across, 3 down). PRINT maps '0'-'9', 'A'-'Z' and $5B (space).</p>
+<div class="font" id="font"></div>
+<h2>Strings</h2>
+<div class="grid strings" id="strings"></div>
+<script>
+const D = {"fighters":[{"name":"Fighter 1","addr":"$1481","verts":[[-20,2,20],[-20,2,70],[-30,12,70],[-30,12,20],[-30,-12,-40],[0,-12,-70],[30,-12,-40],[20,2,20],[30,12,20],[30,12,70],[20,2,70],[0,2,40],[-20,2,-20],[0,2,-40],[20,2,-20]],"edges":[[0,1],[1,2],[2,3],[3,0],[0,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,7],[7,11],[11,0],[0,12],[12,4],[12,13],[13,5],[13,14],[14,6],[14,7]],"range":"$1481-$14C6"},{"name":"Fighter 2","addr":"$14C7","verts":[[0,0,-30],[-70,-28,70],[-20,-4,70],[20,-4,70],[70,-28,70],[-20,0,-50],[0,0,-70],[20,0,-50],[0,20,-50],[0,-20,-50],[-10,6,70],[10,6,70]],"edges":[[0,1],[1,2],[2,3],[3,4],[4,0],[0,5],[5,6],[6,7],[7,0],[0,8],[8,6],[6,9],[9,0],[0,2],[2,10],[10,11],[11,3],[3,0],[0,10],[11,0]],"range":"$14C7-$1502"},{"name":"Fighter 3","addr":"$1503","verts":[[0,-8,-30],[30,-8,0],[0,-8,30],[-30,-8,0],[0,10,0],[0,10,70],[0,30,70],[30,-18,70],[50,-28,70],[-30,-18,70],[-50,-28,70]],"edges":[[0,1],[1,2],[2,3],[3,0],[0,4],[4,2],[2,5],[5,6],[6,2],[2,7],[7,8],[8,2],[2,9],[9,10],[10,2],[3,4],[4,1]],"range":"$1503-$1538"},{"name":"Fighter 4","addr":"$1539","verts":[[0,0,0],[-60,6,62],[-20,-10,62],[20,-10,62],[60,6,62],[0,-20,-20],[-20,0,-40],[-16,6,-30],[20,0,-40],[16,6,-30],[0,0,-60]],"edges":[[0,1],[1,2],[2,3],[3,4],[4,0],[0,2],[2,5],[5,3],[3,0],[0,6],[6,7],[7,0],[0,5],[5,6],[6,8],[8,0],[0,9],[9,8],[8,5],[5,10],[10,6],[7,9],[8,10]],"range":"$1539-$1574"}],"letters":[{"name":"Letters 1","addr":"$1A1B","verts":[[-57,27,0],[57,27,0],[57,-27,0],[-57,-27,0],[-65,35,0],[65,35,0],[65,-35,0],[-65,-35,0]],"edges":[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4]],"range":"$1A1B-$1A3D","borrowed":[],"shown_edges":[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4]]},{"name":"Letters 2","addr":"$1A3E","verts":[[-35,21,0],[-19,21,0],[-27,21,0],[-27,3,0],[-15,3,0],[-9,21,0],[-3,3,0],[-12,12,0],[-6,12,0],[9,3,0],[9,21,0],[21,21,0],[21,3,0],[33,3,0],[39,-3,0],[39,-21,0]],"edges":[[0,1],[2,3],[4,5],[5,6],[7,8],[9,10],[11,12],[12,13],[14,15]],"range":"$1A3E-$1A79","borrowed":[],"shown_edges":[[0,1],[2,3],[4,5],[5,6],[7,8],[9,10],[11,12],[12,13]]},{"name":"Letters 3","addr":"$1A7A","verts":[[39,-3,0],[51,-3,0],[51,-12,0],[48,-12,0],[51,-21,0],[39,-12,0],[33,-21,0],[21,-21,0],[21,-3,0],[33,-3,0],[27,-12,0],[21,-12,0],[15,-3,0],[15,-21,0],[3,-3,0],[3,-21,0]],"edges":[[0,1],[1,2],[3,4],[2,5],[6,7],[7,8],[8,9],[10,11],[12,13],[13,14],[14,15]],"range":"$1A7A-$1AB7","borrowed":[{"from":"Letters 2","edge":[14,15],"p":[39,-3,0],"q":[39,-21,0]}],"shown_edges":[[0,1],[1,2],[3,4],[2,5],[6,7],[7,8],[8,9],[10,11],[12,13],[13,14],[14,15]]},{"name":"Letters 4","addr":"$1AB8","verts":[[-3,-3,0],[-3,-21,0],[-15,-3,0],[-15,-21,0],[-21,-3,0],[-21,-21,0],[-33,-21,0],[-33,-3,0],[-36,-14,0],[-42,-14,0],[-39,-14,0],[-39,-21,0],[-51,-21,0],[-51,-3,0],[-39,-3,0]],"edges":[[0,1],[1,2],[2,3],[4,5],[5,6],[6,7],[8,9],[10,11],[11,12],[12,13],[13,14]],"range":"$1AB8-$1AF2","borrowed":[],"shown_edges":[[0,1],[1,2],[2,3],[4,5],[5,6],[6,7],[8,9],[10,11],[11,12],[12,13],[13,14]]}],"testfig":{"name":"TESTFIG","addr":"$1031","verts":[[0,92,0],[0,0,0],[-8,-8,0],[-120,-8,0],[-124,0,0],[-8,-88,0],[0,-92,0],[8,-8,0],[120,-8,0],[124,0,0],[32,-32,0],[40,-40,0],[40,40,0],[-40,40,0],[-40,-40,0]],"edges":[[2,3],[4,1],[2,5],[6,1],[7,8],[9,1],[7,10],[11,12],[12,13],[13,0],[0,1],[1,13],[13,14],[14,11]],"range":"$1031-$106D"},"font":{"grid":[[0,0],[4,0],[8,0],[12,0],[16,0],[0,12],[4,12],[8,12],[12,12],[16,12],[0,24],[4,24],[8,24],[12,24],[16,24]],"chars":{"0":[[10,14],[14,4],[4,0],[0,10]],"1":[[12,2]],"2":[[10,14],[14,9],[9,5],[5,0],[0,4]],"3":[[0,4],[7,9],[4,14],[14,10]],"4":[[10,5],[5,9],[14,4]],"5":[[0,4],[4,9],[9,5],[5,10],[10,14]],"6":[[5,9],[9,4],[4,0],[0,10]],"7":[[2,14],[14,10]],"8":[[0,4],[10,14],[5,9],[14,4],[10,0]],"9":[[14,10],[10,5],[5,9],[14,4]],"A":[[10,14],[5,9],[14,4],[10,0]],"B":[[6,9],[0,4],[4,14],[14,10],[11,1]],"C":[[4,0],[0,10],[10,14]],"D":[[0,4],[4,14],[14,10],[11,1]],"E":[[4,0],[0,10],[5,7],[10,14]],"F":[[0,10],[5,7],[10,14]],"G":[[7,9],[9,4],[4,0],[0,10],[10,14]],"H":[[5,9],[14,4],[10,0]],"I":[[12,2]],"J":[[5,0],[0,3],[3,13],[11,14]],"K":[[0,10],[14,5],[5,4]],"L":[[4,0],[0,10]],"M":[[0,10],[10,7],[7,14],[14,4]],"N":[[0,10],[10,4],[4,14]],"O":[[10,14],[14,4],[4,0],[0,10]],"P":[[5,9],[9,14],[14,10],[10,0]],"Q":[[7,4],[10,14],[14,4],[4,0],[0,10]],"R":[[4,8],[5,9],[9,14],[14,10],[10,0]],"S":[[0,4],[4,9],[9,5],[5,10],[10,14]],"T":[[10,14],[12,2]],"U":[[14,4],[4,0],[0,10]],"V":[[10,2],[2,14]],"W":[[10,1],[1,7],[7,3],[3,14]],"X":[[0,14],[10,4]],"Y":[[2,7],[7,10],[7,14]],"Z":[[10,14],[14,0],[0,4]]," ":[]}},"xhair":[[-30,0,30,0],[20,-10,20,10],[10,20,-10,20],[0,30,0,-30],[10,-20,-10,-20],[-20,-10,-20,10],[-5,10,5,10],[10,5,10,-5],[5,-10,-5,-10],[-10,-5,-10,5]],"shield":[[768,640],[896,512],[512,128],[128,512],[256,640],[512,384],[768,128],[896,256],[512,640],[128,256],[256,128],[512,384]],"strings":[{"name":"TXT_SCORE","addr":"$1634","text":"SCORE"},{"name":"TXT_HISCORE","addr":"$1804","text":"HIGH SCORE"},{"name":"TXT_CREDITS","addr":"$1870","text":"CREDITS"},{"name":"TXT_PUSHSTART","addr":"$1918","text":"PUSH START"}],"formations":[{"pattern":0,"addr":"$1C8E","steps":[[0,224,128,224,32,128,32,32,128,33],[0,12,0,244,244,0,12,244,0,255]]},{"pattern":1,"addr":"$1CA2","steps":[[229,229,160,229,27,160,23,0,160,37],[14,242,0,14,14,0,245,0,0,255]]},{"pattern":2,"addr":"$1CB6","steps":[[0,0,192,0,41,192,0,215,192,23],[0,245,128,0,11,128,0,234,128,22],[0,0,0,8,0,0,248,0,0,255]]},{"pattern":3,"addr":"$1CD4","steps":[[0,33,160,0,0,160,0,223,160,23],[245,0,112,11,0,112,0,0,112,23],[248,248,0,8,248,0,0,8,0,255]]},{"pattern":4,"addr":"$1CF2","steps":[[0,24,192,219,219,192,37,219,192,17],[236,236,160,20,236,160,0,24,160,17],[20,236,128,0,24,128,236,236,128,17],[0,12,96,246,246,96,10,246,96,17],[248,248,64,8,248,64,0,8,64,17],[8,248,0,0,8,0,248,248,0,255]]},{"pattern":5,"addr":"$1D2E","steps":[[0,24,192,215,215,192,41,215,192,17],[20,236,160,0,24,160,236,236,160,17],[236,236,128,20,236,128,0,24,128,17],[0,12,96,246,246,96,10,246,96,17],[8,248,64,0,10,64,248,248,64,17],[248,248,0,8,248,0,0,8,0,255]]},{"pattern":6,"addr":"$1D06","steps":[[20,236,128,0,24,128,236,236,128,17],[0,12,96,246,246,96,10,246,96,17],[248,248,64,8,248,64,0,8,64,17],[8,248,0,0,8,0,248,248,0,255]]},{"pattern":7,"addr":"$1D42","steps":[[236,236,128,20,236,128,0,24,128,17],[0,12,96,246,246,96,10,246,96,17],[8,248,64,0,10,64,248,248,64,17],[248,248,0,8,248,0,0,8,0,255]]}]};
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function card(parent, title, sub, ratio){
+  const c = document.createElement('div'); c.className = 'card';
+  const cv = document.createElement('canvas'); c.appendChild(cv);
+  const t = document.createElement('div'); t.className = 't'; t.textContent = title; c.appendChild(t);
+  const s = document.createElement('div'); s.className = 's'; s.textContent = sub; c.appendChild(s);
+  parent.appendChild(c); return cv;
+}
+function setup(cv, w, h){
+  const r = window.devicePixelRatio || 1;
+  const cw = cv.clientWidth || 240, ch = h ? cw * h / w : cw;
+  cv.width = cw * r; cv.height = ch * r; const g = cv.getContext('2d'); g.scale(r, r);
+  return [g, cw, ch];
+}
+const models = [];
+const PART_COLORS = ['#ffd166', '#6fd3ff', '#ff7aa8', '#9be38f'];
+// parts: [{m, color}] drawn in one frame. frame: the models whose vertices set
+// the shared centre and scale (so models meant to be seen together keep
+// their real positions relative to one another).
+function addModel(parent, title, sub, parts, sway, frame){
+  const cv = card(parent, title, sub);
+  const all = (frame || parts.map(p => p.m)).flatMap(m => m.verts);
+  const c = [0, 1, 2].map(k => (Math.min(...all.map(v => v[k])) + Math.max(...all.map(v => v[k]))) / 2);
+  let R = 1; for (const v of all) R = Math.max(R, Math.hypot(v[0] - c[0], v[1] - c[1], v[2] - c[2]));
+  models.push({cv, parts, R, c, sway});
+}
+function drawModel(o, t){
+  const [g, w, h] = setup(o.cv);
+  g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
+  const a = o.sway ? 0.5 * Math.sin(t * 0.0007) : t * 0.0006, b = 0.35 * Math.sin(t * 0.0004);
+  const ca = Math.cos(a), sa = Math.sin(a), cb = Math.cos(b), sb = Math.sin(b);
+  const proj = ([x, y, z]) => {
+    x -= o.c[0]; y -= o.c[1]; z -= o.c[2];
+    let X = x * ca - z * sa, Z = x * sa + z * ca; let Y = y * cb - Z * sb; Z = y * sb + Z * cb;
+    const s = (w * 0.42) / o.R * (3 / (3 + Z / o.R));
+    return [w / 2 + X * s, h / 2 - Y * s];
+  };
+  for (const {m, color, edges, lines, dashed} of o.parts){
+    g.strokeStyle = color || '#e8f4ff'; g.lineWidth = 1.2; g.setLineDash(dashed ? [4, 3] : []); g.beginPath();
+    if (m){ const P = m.verts.map(proj); for (const [i, j] of (edges || m.edges)){ g.moveTo(...P[i]); g.lineTo(...P[j]); } }
+    for (const [p, q] of lines || []){ g.moveTo(...proj(p)); g.lineTo(...proj(q)); }
+    g.stroke();
+  }
+  g.setLineDash([]);
+}
+const info = m => m.addr + '  ' + m.verts.length + ' vertices, ' + m.edges.length + ' edges';
+D.fighters.forEach(m => addModel(document.getElementById('fighters'), m.name, info(m), [{m}]));
+addModel(document.getElementById('title'), 'TITLE3D: all four models',
+         'each model in its own colour: Letters 1 yellow, 2 blue, 3 pink, 4 green',
+         D.letters.map((m, n) => ({m, color: PART_COLORS[n]})), true);
+D.letters.forEach(m => {
+  const parts = [{m, edges: m.shown_edges}];
+  let sub = info(m);
+  if (m.borrowed.length){
+    parts.push({lines: m.borrowed.map(b => [b.p, b.q]), dashed: true, color: '#ffd166'});
+    sub += '; dashed: ' + m.borrowed.map(b => b.from + ' edge ' + b.edge.join('-')).join(', ') + ' (stored there)';
+  }
+  const moved = D.letters.flatMap(n => n.borrowed.filter(b => b.from === m.name));
+  if (moved.length) sub += '; ' + moved.length + ' stroke(s) stored here are drawn with ' +
+    D.letters.filter(n => n.borrowed.some(b => b.from === m.name)).map(n => n.name).join(', ');
+  addModel(document.getElementById('letters'), m.name, sub, parts, true, D.letters);
+});
+addModel(document.getElementById('test'), 'TESTFIG', info(D.testfig), [{m: D.testfig}], true);
+let t0 = 0;
+function frame(t){ if (document.getElementById('spin').checked) t0 = t; models.forEach(o => drawModel(o, t0)); requestAnimationFrame(frame); }
+requestAnimationFrame(frame);
+{ // crosshair
+  const cv = card(document.getElementById('xhair'), 'XHAIRSHP', '$0617  ' + D.xhair.length + ' lines');
+  const [g, w, h] = setup(cv); g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
+  g.strokeStyle = '#e8f4ff'; g.lineWidth = 1.5; g.beginPath(); const s = w / 80;
+  for (const [x1, y1, x2, y2] of D.xhair){ g.moveTo(w/2 + x1*s, h/2 - y1*s); g.lineTo(w/2 + x2*s, h/2 - y2*s); }
+  g.stroke();
+}
+{ // shield: screen coordinates, 1024 x 780 visible, y up
+  const cv = card(document.getElementById('xhair'), 'SHIELDPTS', '$03CD  ' + D.shield.length + ' points, from the centre ($200, $180)');
+  const [g, w, h] = setup(cv); g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
+  const s = w / 1024, oy = (h - 780 * s) / 2;
+  g.strokeStyle = '#e8f4ff'; g.lineWidth = 1.2; g.beginPath(); g.moveTo(0x200 * s, h - oy - 0x180 * s);
+  for (const [x, y] of D.shield) g.lineTo(x * s, h - oy - y * s);
+  g.stroke();
+}
+function drawChar(g, ch, x0, y0, s){
+  for (const [i, j] of D.font.chars[ch] || []){
+    const a = D.font.grid[i], b = D.font.grid[j];
+    g.moveTo(x0 + a[0]*s, y0 - a[1]*s); g.lineTo(x0 + b[0]*s, y0 - b[1]*s);
+  }
+}
+for (const ch of Object.keys(D.font.chars)){
+  const cv = card(document.getElementById('font'), ch === ' ' ? 'space' : ch, '');
+  const [g, w, h] = setup(cv, 3, 4); g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
+  g.strokeStyle = '#e8f4ff'; g.lineWidth = 1.5; g.beginPath(); const s = w / 26;
+  drawChar(g, ch, 5*s, h - 6*s, s); g.stroke();
+}
+for (const st of D.strings){
+  const cv = card(document.getElementById('strings'), st.name, st.addr + '  "' + st.text + '"');
+  const [g, w, h] = setup(cv, 4, 1); g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
+  g.strokeStyle = '#e8f4ff'; g.lineWidth = 1.3; g.beginPath();
+  const s = Math.min(w / (st.text.length * 24 + 8), h / 34);
+  [...st.text].forEach((ch, n) => drawChar(g, ch, 6*s + n * 24 * s, h/2 + 12*s, s)); g.stroke();
+}
+</script></main></body></html>

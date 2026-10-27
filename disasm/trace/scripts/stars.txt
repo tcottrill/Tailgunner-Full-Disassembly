@@ -1,0 +1,6 @@
+# Two consecutive attract frames, to see which way the stars move.
+frames 200
+snap stars_a
+frames 1
+snap stars_b
+frames 1
